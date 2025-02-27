@@ -20,7 +20,7 @@ Qwen2Config中包含一些自定义的超参数，例如`vocab_size`,`hidden_siz
 - 设置了模型的两个属性:`padding_idx`（用于指定填充标记的索引），`vocab_size`（词汇表的大小）
 - 初始化了模型的嵌入层、解码器层、归一化层
 - 嵌入层（`nn.Embedding`）：模型使用嵌入层将输入的标记映射成密集的向量表示。
-- 解码器层（`nn.ModuleList()`）：模型包含多个解码器层，这些层都是由 `Qwen2DecoderLayer``  定义
+- 解码器层（`nn.ModuleList()`）：模型包含多个解码器层，这些层都是由 `Qwen2DecoderLayer`  定义
 - 归一化层 `Qwen2RMSNorm`：归一化层使用的是 Root Mean Square Layer Normalization
 - 设置了是否使用 `gradient_checkpoint` 主要是用来节省显存
 - 调用 `post_init()` 完成一些初始化和准备检查的代码
@@ -115,7 +115,7 @@ class Qwen2DecoderLayer(nn.Module):
         self.post_attention_layernorm = Qwen2RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
 ```
 这里面的`input_layernorm`和`post_attention_layernorm`内容是一样的，只是应用的顺序不一样。
-### 1.1.2 Forward
+### 1.2.2 Forward
 可配合图食用，效果更佳:
 - 首先复制一份`hidden_states`为`residual`,然后将`hidden_states`送入`Norm`,再送入`attn`模块。
 - 得到`attn`的输出后，再复制一份`residual`，再将`hidden_states`送入`Norm`，`mlp`，再与`residual`进行相加。最后输出的就是这个`hidden_states`啦。  
